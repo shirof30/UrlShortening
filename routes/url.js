@@ -8,37 +8,41 @@ const URL = require('../models/url');
 
 router.post('/shorten',async(req, res) => {
 	const { longURL} = req.body;
-	const baseURL = config.get('baseURL')
+	const baseUrl = config.get('baseURL')
 
 	//checking base url
-	if(!validUrl.isUri(baseURL)) {
+	if(!validURL.isUri(baseUrl)) {
 		return res.status(401).json('invalid base url');
 	}
 	//create code
 	const urlcode = shortid.generate();
-	if(validUrl.isUri(longURL)) {
-		try{
-			let checkurl = await Url.findOne({ longURL});
-			if(checkurl) {
-				res.json(checkurl);
-			} else {
-				const shortenurl = baseURL + '/' + urlcode;
 
-				checkurl = new Url({
+
+	if(validURL.isUri(longURL)) {
+		try{
+			let url = await URL.findOne({ longURL});
+			if(url) {
+				res.json(url);
+			} else {
+				const shortUrl = baseUrl + '/' + urlcode;
+
+				url = new URL({
 					longURL,
 					shortURL,
 					urlcode,
 					date: new Date()
 				});
 
-				await checkurl.save();
-				checkurl.json(url);
+				await url.save();
+				res.json(url);
 				}
 
 		} catch ( err) {
 			console.error(err);
 			res.status(500).json('Server error');
 		}
+	} else {
+		res.status(401).json('Invalid input url');
 	}
 
 });
