@@ -42,7 +42,7 @@ router.post('/shorten',async(req, res) => {
 			res.status(500).json('Server error');
 		}
 	} else {
-		res.status(401).json('Invalid input url');
+		res.status(401).json('Invalid URL requested');
 	}
 
 });
