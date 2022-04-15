@@ -71,8 +71,27 @@ body, html {
             return;
         }
         if (taskName.indexOf('https') < 0) {
-          textboxval.value ='TEXT ERROR \nPlease Include the HTTP on the link pasted.\n.... ABORTED ....';
-          return;
+          //textboxval.value ='TEXT ERROR \nPlease Include the HTTP on the link pasted.\n.... ABORTED ....';
+
+          let text1 = "https://";
+          let text2 = taskName;
+          let result = text1.concat(text2);
+          //taskName = result;
+          const url='http://localhost:5000/api/url/shorten';
+            const data = JSON.stringify({"longURL": result});
+            const options=
+            {
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body:data
+            };
+
+        //fetch call
+            fetch(url,options).then(response=>response.json())
+        .then(data=>{ textboxval.value=data; });
+        return;
         } 
 
         //call settings
