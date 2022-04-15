@@ -7,7 +7,7 @@ const config = require('config');
 const URL = require('../models/url');
 
 router.post('/shorten',async(req, res) => {
-	const { longURL} = req.body;
+	const {longURL} = req.body;
 	const baseUrl = config.get('baseURL')
 
 	//checking base url
@@ -22,7 +22,7 @@ router.post('/shorten',async(req, res) => {
 		try{
 			let url = await URL.findOne({ longURL});
 			if(url) {
-				res.json(url);
+				res.json(url.shortUrl);
 			} else {
 				const shortUrl = baseUrl + '/' + urlcode;
 
@@ -34,7 +34,7 @@ router.post('/shorten',async(req, res) => {
 				});
 
 				await url.save();
-				res.json(url);
+				res.json(shortUrl);
 				}
 
 		} catch ( err) {

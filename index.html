@@ -1,26 +1,49 @@
 <!DOCTYPE html>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+body, html {
+  height: 100%;
+  font-family: "Inconsolata", sans-serif;
+}
+
+.bgimg {
+  background-position: center;
+  background-size: cover;
+  background-image: url("/w3images/coffeehouse.jpg");
+  min-height: 75%;
+}
+
+.menu {
+  display: none;
+}
+</style>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
 </head>
-
-<body>
-
+<header>
+</header>
+<body style="background-color:LightGray;">
 <main>
-    <h1>URL Shortening service</h1>    
-    <form>
+
+    <div class="w3-container" id="about">
+    <h3 class="w3-center w3-padding-64"><span class="w3-tag w3-wide">URL Shortening Website</span></h3> 
+    <p>
         <label>Post long URl:
             <input type="text" id="inNewTask" placeholder="Long Url here"/>
         </label>
         <button type="button" id="btAddTask">Add Post</button>
 
+        <button onclick="copylink()">Copy Link</button>
+
         <br /> <br />
         <p> Generated URL</p>
         <textarea id="textboxres" cols="50" rows="5"></textarea>
-    </form>
- 
+    </p>
+ </div>
 </main>
-<footer>
+<footer class="w3-center w3-light-grey w3-padding-48 w3-large">
+  <p>Made by SHIROF30 <a href="https://github.com/shirof30" title="GITHUB" target="_blank" class="w3-hover-text-green">GITHUB</a></p>
 </footer>
 
 
@@ -31,9 +54,13 @@
 
     //event handler assignments
     document.getElementById('btAddTask').addEventListener('click',addTask);
-    document.getElementById('btEdtTask').addEventListener('click',editTask);
-    document.getElementById('btGetAllPost').addEventListener('click',getTasks);
-
+    function copylink() 
+    {
+        var copyText = textboxval.value;
+        navigator.clipboard.writeText(copyText);
+        alert("Copied the link");
+    }
+    
     function addTask() {
         textboxval.value='URL Shortening started ...';
 
@@ -43,13 +70,14 @@
             textboxval.value +='\nSorry, nothing to shorten.\nDone.';
             return;
         }
-
-        const data = JSON.stringify({"longURL":taskName});
+        if (taskName.indexOf('https') < 0) {
+          textboxval.value ='TEXT ERROR \nPlease Include the HTTP on the link pasted.\n.... ABORTED ....';
+          return;
+        } 
 
         //call settings
         const url='http://localhost:5000/api/url/shorten';
-;
-
+        const data = JSON.stringify({"longURL": taskName});
         const options=
             {
                 method:'POST',
@@ -60,79 +88,8 @@
             };
 
         //fetch call
-        await fetch(url,options)
-        .then(response =>{
-            if(response.ok){
-            return response.json();
-
-            }else{
-            raiseError && raiseError(response.status);
-            }
-        })
-        .then(responseJSON => (onSuccess && onSuccess(responseJSON)))
-        .catch (error => raiseError(error));
-    }
-    /*function getTasks() { // eslint-disable-line no-unused-vars
-        textboxval.value='getting all post ...';
-        //call settings
-        const url='http://127.0.0.1:8080/post/all';
-
-        const options=
-            {
-            method:'GET'
-            };
-
-            //fetch call
-            fetch(url,options)
-            .then(response =>{
-            if(response.ok){
-                return response.json();
-            }else{
-                raiseError && raiseError(response.status);
-            }
-            })
-            .then(responseJSON => (onSuccess && onSuccess(responseJSON)))
-            .catch (error => raiseError(error));
-    }
-    function editTask() { // eslint-disable-line no-unused-vars
-        textboxval.value='getting post ...';
-
-
-        const taskId = document.getElementById('inTaskIdEdt').value.trim();
-
-        if (taskId=='') {
-            tareaOut.value +='\nSorry, no task id specified.\nDone.';
-            return;
-        }
-
-        //call settings
-        const url='http://127.0.0.1:8080/post/'+taskId;
-
-        const options=
-            {
-            method:'GET'
-            };
-
-            //fetch call
-            fetch(url,options)
-            .then(response =>{
-            if(response.ok){
-                return response.json();
-            }else{
-                raiseError && raiseError(response.status);
-            }
-            })
-            .then(responseJSON => (onSuccess && onSuccess(responseJSON)))
-            .catch (error => raiseError(error));
-    } */
-
-    function onSuccess(response) {
-        console.log(response);
-        textboxval.value='SUCCESS. \n\nResponse:\n'+JSON.stringify(response);
-    }
-
-    function raiseError(message) {
-        textboxval.value='ERROR.\n'+ message;
+        fetch(url,options).then(response=>response.json())
+    .then(data=>{ textboxval.value=data; });
     }
 
 
