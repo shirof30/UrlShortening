@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+
+<main>
+    <h1>URL Shortening service</h1>    
+    <form>
+        <label>Post long URl:
+            <input type="text" id="inNewTask" placeholder="Long Url here"/>
+        </label>
+        <button type="button" id="btAddTask">Add Post</button>
+
+        <br /> <br />
+        <p> Generated URL</p>
+        <textarea id="textboxres" cols="50" rows="5"></textarea>
+    </form>
+ 
+</main>
+<footer>
+</footer>
+
+
+<script>
+    
+    //texarea element for output
+    const textboxval = document.getElementById('textboxres');
+
+    //event handler assignments
+    document.getElementById('btAddTask').addEventListener('click',addTask);
+    document.getElementById('btEdtTask').addEventListener('click',editTask);
+    document.getElementById('btGetAllPost').addEventListener('click',getTasks);
+
+    function addTask() {
+        textboxval.value='URL Shortening started ...';
+
+        const taskName = document.getElementById('inNewTask').value.trim();
+
+        if (taskName=='') {
+            textboxval.value +='\nSorry, nothing to shorten.\nDone.';
+            return;
+        }
+
+        const data = JSON.stringify({"longURL":taskName});
+
+        //call settings
+        const url='http://localhost:5000/api/url/shorten';
+;
+
+        const options=
+            {
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body:data
+            };
+
+        //fetch call
+        await fetch(url,options)
+        .then(response =>{
+            if(response.ok){
+            return response.json();
+
+            }else{
+            raiseError && raiseError(response.status);
+            }
+        })
+        .then(responseJSON => (onSuccess && onSuccess(responseJSON)))
+        .catch (error => raiseError(error));
+    }
+    /*function getTasks() { // eslint-disable-line no-unused-vars
+        textboxval.value='getting all post ...';
+        //call settings
+        const url='http://127.0.0.1:8080/post/all';
+
+        const options=
+            {
+            method:'GET'
+            };
+
+            //fetch call
+            fetch(url,options)
+            .then(response =>{
+            if(response.ok){
+                return response.json();
+            }else{
+                raiseError && raiseError(response.status);
+            }
+            })
+            .then(responseJSON => (onSuccess && onSuccess(responseJSON)))
+            .catch (error => raiseError(error));
+    }
+    function editTask() { // eslint-disable-line no-unused-vars
+        textboxval.value='getting post ...';
+
+
+        const taskId = document.getElementById('inTaskIdEdt').value.trim();
+
+        if (taskId=='') {
+            tareaOut.value +='\nSorry, no task id specified.\nDone.';
+            return;
+        }
+
+        //call settings
+        const url='http://127.0.0.1:8080/post/'+taskId;
+
+        const options=
+            {
+            method:'GET'
+            };
+
+            //fetch call
+            fetch(url,options)
+            .then(response =>{
+            if(response.ok){
+                return response.json();
+            }else{
+                raiseError && raiseError(response.status);
+            }
+            })
+            .then(responseJSON => (onSuccess && onSuccess(responseJSON)))
+            .catch (error => raiseError(error));
+    } */
+
+    function onSuccess(response) {
+        console.log(response);
+        textboxval.value='SUCCESS. \n\nResponse:\n'+JSON.stringify(response);
+    }
+
+    function raiseError(message) {
+        textboxval.value='ERROR.\n'+ message;
+    }
+
+
+</script>
+</body>
+</html>
