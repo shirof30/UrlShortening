@@ -37,10 +37,10 @@
                 body:data
             };
 
-        //fetch call
-            fetch(url,options).then(response=>response.json())
-        .then(data=>{ textboxval.value=data; });
-        return;
+            //fetch call
+                fetch(url,options).then(response=>response.json())
+            .then(data=>{ textboxval.value=data; });
+            return;
         } 
 
         //call settings
