@@ -1,22 +1,5 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<style>
-body, html {
-  height: 100%;
-  font-family: "Inconsolata", sans-serif;
-}
-
-.bgimg {
-  background-position: center;
-  background-size: cover;
-  background-image: url("/w3images/coffeehouse.jpg");
-  min-height: 75%;
-}
-
-.menu {
-  display: none;
-}
-</style>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,12 +10,15 @@ body, html {
 <main>
 
     <div class="w3-container" id="about">
+    
     <h3 class="w3-center w3-padding-64"><span class="w3-tag w3-wide">URL Shortening Website</span></h3> 
     <p>
         <label>Post long URl:
             <input type="text" id="inNewTask" placeholder="Long Url here"/>
         </label>
+        <div id="like_button_container"></div>
         <button type="button" id="btAddTask">Add Post</button>
+
 
         <button onclick="copylink()">Copy Link</button>
 
@@ -45,73 +31,6 @@ body, html {
 <footer class="w3-center w3-light-grey w3-padding-48 w3-large">
   <p>Made by SHIROF30 <a href="https://github.com/shirof30" title="GITHUB" target="_blank" class="w3-hover-text-green">GITHUB</a></p>
 </footer>
-
-
-<script>
-    
-    //texarea element for output
-    const textboxval = document.getElementById('textboxres');
-
-    //event handler assignments
-    document.getElementById('btAddTask').addEventListener('click',addTask);
-    function copylink() 
-    {
-        var copyText = textboxval.value;
-        navigator.clipboard.writeText(copyText);
-        alert("Copied the link");
-    }
-    
-    function addTask() {
-        textboxval.value='URL Shortening started ...';
-
-        const taskName = document.getElementById('inNewTask').value.trim();
-
-        if (taskName=='') {
-            textboxval.value +='\nSorry, nothing to shorten.\nDone.';
-            return;
-        }
-        if (taskName.indexOf('https') < 0) {
-          //textboxval.value ='TEXT ERROR \nPlease Include the HTTP on the link pasted.\n.... ABORTED ....';
-
-          let text1 = "https://";
-          let text2 = taskName;
-          let result = text1.concat(text2);
-          //taskName = result;
-          const url='http://localhost:5000/api/url/shorten';
-            const data = JSON.stringify({"longURL": result});
-            const options=
-            {
-                method:'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body:data
-            };
-
-        //fetch call
-            fetch(url,options).then(response=>response.json())
-        .then(data=>{ textboxval.value=data; });
-        return;
-        } 
-
-        //call settings
-        const url='http://localhost:5000/api/url/shorten';
-        const data = JSON.stringify({"longURL": taskName});
-        const options=
-            {
-                method:'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body:data
-            };
-
-        //fetch call
-        fetch(url,options).then(response=>response.json())
-    .then(data=>{ textboxval.value=data; });
-    }
-
-
-</script>
+<script src="functions.js"></script>
 </body>
 </html>
